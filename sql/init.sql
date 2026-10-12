@@ -9,7 +9,7 @@ CREATE TABLE tasks (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO tasks (title, description, completed) VALUES 
+INSERT INTO tasks (title, descriptionn, completed) VALUES 
     ('Learn GO', 'To pass base course', true),
-    ('Write REST API', 'To watch video and write it by myself'),
-    ('Release the app', 'To deliver the app into the server');
+    ('Write REST API', 'To watch video and write it by myself', false),
+    ('Release the app', 'To deliver the app into the server', false);
