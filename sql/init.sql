@@ -12,4 +12,4 @@ CREATE TABLE tasks (
 INSERT INTO tasks (title, description, completed) VALUES 
     ('Learn GO', 'To pass base course', true),
     ('Write REST API', 'To watch video and write it by myself'),
-    ('Release the app', 'To deliver the app into the server'),
+    ('Release the app', 'To deliver the app into the server');
