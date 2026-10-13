@@ -22,7 +22,3 @@ type UpdateTaskInput struct {
 	Description *string `json: "description"`
 	Completed   *bool   `json: "completed"`
 }
-
-func main() {
-
-}
