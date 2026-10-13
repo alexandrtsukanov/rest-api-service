@@ -37,4 +37,33 @@ func main() {
 	handlers := handlers.NewHandlers(taskService)
 
 	mux := http.NewServeMux()
+
+	mux.HandleFunc("/tasks", methodHandler(handlers.GetAllTasks, "GET"))
+	mux.HandleFunc("/tasks/create", methodHandler(handlers.CreateTask, "POST"))
+	mux.HandleFunc("/tasks/:id", taskIdHandler(handlers))
+}
+
+func methodHandler(handler http.HandlerFunc, allowedMethod string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != allowedMethod {
+			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		}
+
+		handler(w, r)
+	}
+}
+
+func taskIdHandler(handler *handlers.Handlers) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			handler.GetTask(w, r)
+		case http.MethodPut:
+			handler.UpdateTask(w, r)
+		case http.MethodDelete:
+			handler.DeleteTask(w, r)
+		default:
+			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		}
+	}
 }

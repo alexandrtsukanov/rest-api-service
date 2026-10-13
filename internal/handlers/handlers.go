@@ -15,7 +15,7 @@ type Handlers struct {
 	service *database.TaskService
 }
 
-func (h *Handlers) GetAllTasks(w http.ResponseWriter) {
+func (h *Handlers) GetAllTasks(w http.ResponseWriter, r *http.Request) {
 	tasks, err := h.service.GetAll()
 
 	if err != nil {
@@ -26,7 +26,7 @@ func (h *Handlers) GetAllTasks(w http.ResponseWriter) {
 	RespondWithJSON(w, http.StatusOK, tasks)
 }
 
-func (h *Handlers) GetTask(w http.ResponseWriter, r http.Request) {
+func (h *Handlers) GetTask(w http.ResponseWriter, r *http.Request) {
 	id, idValidationErr := h.validateId(w, r)
 
 	if idValidationErr != nil {
@@ -47,7 +47,7 @@ func (h *Handlers) GetTask(w http.ResponseWriter, r http.Request) {
 	RespondWithJSON(w, http.StatusOK, task)
 }
 
-func (h *Handlers) CreateTask(w http.ResponseWriter, r http.Request) {
+func (h *Handlers) CreateTask(w http.ResponseWriter, r *http.Request) {
 	var input models.CreateTaskInput
 
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
@@ -70,7 +70,7 @@ func (h *Handlers) CreateTask(w http.ResponseWriter, r http.Request) {
 	RespondWithJSON(w, http.StatusCreated, task)
 }
 
-func (h *Handlers) UpdateTask(w http.ResponseWriter, r http.Request) {
+func (h *Handlers) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	id, idValidationErr := h.validateId(w, r)
 
 	if idValidationErr != nil {
@@ -103,7 +103,7 @@ func (h *Handlers) UpdateTask(w http.ResponseWriter, r http.Request) {
 	RespondWithJSON(w, http.StatusOK, task)
 }
 
-func (h *Handlers) DeleteTask(w http.ResponseWriter, r http.Request) {
+func (h *Handlers) DeleteTask(w http.ResponseWriter, r *http.Request) {
 	id, idValidationErr := h.validateId(w, r)
 
 	if idValidationErr != nil {
@@ -124,7 +124,7 @@ func (h *Handlers) DeleteTask(w http.ResponseWriter, r http.Request) {
 	RespondWithJSON(w, http.StatusNoContent, nil)
 }
 
-func (h *Handlers) validateId(w http.ResponseWriter, r http.Request) (int, error) {
+func (h *Handlers) validateId(w http.ResponseWriter, r *http.Request) (int, error) {
 	pathParts := strings.Split(strings.TrimPrefix(r.URL.Path, "/tasks/"), "/")
 	idString := pathParts[0]
 
