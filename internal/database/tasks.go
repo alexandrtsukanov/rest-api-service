@@ -38,7 +38,7 @@ func (ts *TaskService) GetAll() ([]models.Task, error) {
 	return tasks, nil
 }
 
-func (ts *TaskService) GetTaskById(id int) (*models.Task, error) {
+func (ts *TaskService) GetById(id int) (*models.Task, error) {
 	var task models.Task
 
 	query := `
@@ -60,7 +60,7 @@ func (ts *TaskService) GetTaskById(id int) (*models.Task, error) {
 	return &task, nil
 }
 
-func (ts *TaskService) CreateTask(input models.CreateTaskInput) (*models.Task, error) {
+func (ts *TaskService) Create(input models.CreateTaskInput) (*models.Task, error) {
 	var task models.Task
 
 	query := `
@@ -88,8 +88,8 @@ func (ts *TaskService) CreateTask(input models.CreateTaskInput) (*models.Task, e
 	return &task, nil
 }
 
-func (ts *TaskService) UpdateTask(id int, input models.UpdateTaskInput) (*models.Task, error) {
-	task, err := ts.GetTaskById(id)
+func (ts *TaskService) Update(id int, input models.UpdateTaskInput) (*models.Task, error) {
+	task, err := ts.GetById(id)
 
 	if err != nil {
 		return nil, err
@@ -134,7 +134,7 @@ func (ts *TaskService) UpdateTask(id int, input models.UpdateTaskInput) (*models
 	return &updatedTask, nil
 }
 
-func (ts *TaskService) DeleteTask(id int) error {
+func (ts *TaskService) Delete(id int) error {
 	query := "DELETE FROM tasks where id = $1"
 
 	result, err := ts.db.Exec(query, id)
