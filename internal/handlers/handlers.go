@@ -19,7 +19,7 @@ func (h *Handlers) GetAllTasks(w http.ResponseWriter, r *http.Request) {
 	tasks, err := h.service.GetAll()
 
 	if err != nil {
-		RespondWithError(w, http.StatusInternalServerError, "Getting tasks error")
+		RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 

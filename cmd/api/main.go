@@ -6,13 +6,19 @@ import (
 	"os"
 	"restapi-tasks/internal/database"
 	"restapi-tasks/internal/handlers"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using environment variables")
+	}
+
 	databaseURL := os.Getenv("DATABASE_URL")
 
 	if databaseURL == "" {
-		databaseURL = "postgres://taskuser:taskpass@localhost:5432/tasksdb?sslmode=prefer"
+		databaseURL = "postgres://taskuser:taskpass@localhost:5433/tasksdb?sslmode=prefer"
 	}
 
 	serverPort := os.Getenv("SERVER_PORT")
@@ -38,9 +44,9 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/tasks", methodHandler(handlers.GetAllTasks, "GET"))
-	mux.HandleFunc("/tasks/create", methodHandler(handlers.CreateTask, "POST"))
-	mux.HandleFunc("/tasks/:id", taskIdHandler(handlers))
+	mux.HandleFunc("/tasks", methodHandler(handlers.GetAllTasks, http.MethodGet))
+	mux.HandleFunc("/tasks/create", methodHandler(handlers.CreateTask, http.MethodPost))
+	mux.HandleFunc("/tasks/", taskIdHandler(handlers))
 
 	loggedMux := loggingMiddleware(mux)
 	serverAddr := ":" + serverPort

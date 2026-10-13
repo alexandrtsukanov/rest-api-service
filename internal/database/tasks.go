@@ -26,7 +26,7 @@ func (ts *TaskService) GetAll() ([]models.Task, error) {
 	query := `
 		SELECT id, title, descriptionn, completed, created_at, updated_at
 		FROM tasks
-		ordered by created_at desc;
+		order by created_at desc;
 	`
 
 	err := ts.db.Select(&tasks, query)
@@ -112,7 +112,7 @@ func (ts *TaskService) Update(id int, input models.UpdateTaskInput) (*models.Tas
 	query := `
 		UPDATE tasks
 		SET title = $1, descriptionn = $2, completed = $3, updated_at = $4
-		where id = %5
+		where id = $5
 		returning id, title, descriptionn, completed, created_at, updated_at;
 	`
 
