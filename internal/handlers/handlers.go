@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"restapi-tasks/internal/database"
@@ -36,11 +35,7 @@ func (h *Handlers) GetTask(w http.ResponseWriter, r *http.Request) {
 	task, err := h.service.GetById(id)
 
 	if err != nil {
-		if errors.Is(err, fmt.Errorf(database.NOT_FOUND_ERROR, id)) {
-			RespondWithError(w, http.StatusNotFound, err.Error())
-		} else {
-			RespondWithError(w, http.StatusInternalServerError, err.Error())
-		}
+		h.checkIfNotFound(w, id, err)
 		return
 	}
 
@@ -92,11 +87,7 @@ func (h *Handlers) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	task, err := h.service.Update(id, input)
 
 	if err != nil {
-		if errors.Is(err, fmt.Errorf(database.NOT_FOUND_ERROR, id)) {
-			RespondWithError(w, http.StatusNotFound, err.Error())
-		} else {
-			RespondWithError(w, http.StatusInternalServerError, err.Error())
-		}
+		h.checkIfNotFound(w, id, err)
 		return
 	}
 
@@ -110,14 +101,10 @@ func (h *Handlers) DeleteTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	removeErr := h.service.Delete(id)
+	err := h.service.Delete(id)
 
-	if removeErr != nil {
-		if errors.Is(removeErr, fmt.Errorf(database.NOT_FOUND_ERROR, id)) {
-			RespondWithError(w, http.StatusNotFound, removeErr.Error())
-		} else {
-			RespondWithError(w, http.StatusInternalServerError, removeErr.Error())
-		}
+	if err != nil {
+		h.checkIfNotFound(w, id, err)
 		return
 	}
 
@@ -136,6 +123,14 @@ func (h *Handlers) validateId(w http.ResponseWriter, r *http.Request) (int, erro
 	}
 
 	return id, nil
+}
+
+func (h *Handlers) checkIfNotFound(w http.ResponseWriter, id int, err error) {
+	if strings.Contains(err.Error(), fmt.Sprintf(database.NOT_FOUND_ERROR, id)) {
+		RespondWithError(w, http.StatusNotFound, err.Error())
+	} else {
+		RespondWithError(w, http.StatusInternalServerError, err.Error())
+	}
 }
 
 func NewHandlers(service *database.TaskService) *Handlers {
