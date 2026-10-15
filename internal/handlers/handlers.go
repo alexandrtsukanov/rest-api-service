@@ -126,11 +126,15 @@ func (h *Handlers) validateId(w http.ResponseWriter, r *http.Request) (int, erro
 }
 
 func (h *Handlers) checkIfNotFound(w http.ResponseWriter, id int, err error) {
+	var status int
+
 	if strings.Contains(err.Error(), fmt.Sprintf(database.NOT_FOUND_ERROR, id)) {
-		RespondWithError(w, http.StatusNotFound, err.Error())
+		status = http.StatusNotFound
 	} else {
-		RespondWithError(w, http.StatusInternalServerError, err.Error())
+		status = http.StatusInternalServerError
 	}
+
+	RespondWithError(w, status, err.Error())
 }
 
 func NewHandlers(service *database.TaskService) *Handlers {
